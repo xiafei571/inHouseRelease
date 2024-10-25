@@ -46,19 +46,19 @@ public class FormController {
         List<Form.Command> commands = new ArrayList<>();
 
         // Process variables
-        for (int i = 0; i < 100; i++) {
+        int i = 0;
+        while (null != allParams && allParams.containsKey("variableNotes[" + i + "]")) {
             String notes = allParams.get("variableNotes[" + i + "]");
             String key = allParams.get("variableKeys[" + i + "]");
             String value = allParams.get("variableValues[" + i + "]");
             
             logger.debug("Checking variable {}: notes={}, key={}, value={}", i, notes, key, value);
             
-            if (notes == null && key == null && value == null) {
+            if (notes == null || key == null || value == null) {
                 logger.debug("No more variables found after index {}", i);
                 break;
             }
-            
-            // 检查可能的拼写错误
+
             if (notes == null) notes = allParams.get("variableNotess[" + i + "]");
             if (key == null) key = allParams.get("variablekeys[" + i + "]");
             if (value == null) value = allParams.get("variablevalues[" + i + "]");
@@ -70,27 +70,30 @@ public class FormController {
             variables.add(variable);
             logger.debug("Added variable {}: notes={}, key={}, value={}", 
                 i, variable.getNotes(), variable.getKey(), variable.getValue());
+            i++;
         }
 
         // Process commands
-        for (int i = 0; i < 100; i++) {
-            String notes = allParams.get("commandNotes[" + i + "]");
-            String content = allParams.get("commandContents[" + i + "]");
+        int j = 0;
+        while (null != allParams && allParams.containsKey("commandNotes[" + j + "]")) {
+            String notes = allParams.get("commandNotes[" + j + "]");
+            String content = allParams.get("commandContents[" + j + "]");
             
-            logger.debug("Checking command {}: notes={}, content={}", i, notes, content);
+            logger.debug("Checking command {}: notes={}, content={}", j, notes, content);
             
-            if (notes == null && content == null) {
-                logger.debug("No more commands found after index {}", i);
+            if (notes == null || content == null) {
+                logger.debug("No more commands found after index {}", j);
                 break;
             }
             
             Form.Command command = new Form.Command();
             command.setNotes(notes);
             command.setContent(content);
-            command.setActive(allParams.containsKey("commandActive[" + i + "]"));
+            command.setActive(allParams.containsKey("commandActive[" + j + "]"));
             commands.add(command);
             logger.debug("Added command {}: notes={}, content={}, active={}", 
-                i, command.getNotes(), command.getContent(), command.isActive());
+                j, command.getNotes(), command.getContent(), command.isActive());
+            j++;
         }
 
         form.setVariables(variables);

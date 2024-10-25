@@ -133,15 +133,17 @@ public class FormService {
             form.setName((String) data.get("name"));
             
             List<Map<String, String>> variablesList = (List<Map<String, String>>) data.get("variables");
-            List<Form.Variable> variables = new ArrayList<>();
-            for (Map<String, String> variableMap : variablesList) {
-                Form.Variable variable = new Form.Variable();
-                variable.setNotes(variableMap.get("notes"));
-                variable.setKey(variableMap.get("key"));
-                variable.setValue(variableMap.get("value"));
-                variables.add(variable);
+            if (variablesList != null) {
+                List<Form.Variable> variables = new ArrayList<>();
+                for (Map<String, String> variableMap : variablesList) {
+                    Form.Variable variable = new Form.Variable();
+                    variable.setNotes(variableMap.get("notes"));
+                    variable.setKey(variableMap.get("key"));
+                    variable.setValue(variableMap.get("value"));
+                    variables.add(variable);
+                }
+                form.setVariables(variables);
             }
-            form.setVariables(variables);
 
             List<Map<String, Object>> commandsList = (List<Map<String, Object>>) data.get("commands");
             List<Form.Command> commands = new ArrayList<>();

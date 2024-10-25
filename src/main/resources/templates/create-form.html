@@ -10,67 +10,60 @@
             margin: 0;
             padding: 20px;
             background-color: #f4f4f4;
-            font-size: 14px;  /* 减小基础字体大小 */
+            font-size: 14px;
         }
         .container {
             max-width: 1200px;
-            display: flex;
-            justify-content: space-between;
-        }
-        .main-content {
-            width: 65%;
-        }
-        .sidebar {
-            width: 30%;
-            font-size: 12px; /* 减小 Variables 部分的字体大小 */
-        }
-        .container {
-            max-width: 800px;
             margin: auto;
             background: white;
             padding: 20px;
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
-        h1 {
+        .form-content {
+            display: flex;
+            justify-content: space-between;
+        }
+        .main-content {
+            width: 70%;
+            padding-right: 20px;
+        }
+        .sidebar {
+            width: 28%;
+            padding-left: 20px;
+            border-left: 1px solid #ddd;
+        }
+        h1, h2 {
             color: #333;
-            font-size: 24px;  /* 减小 h1 字体大小 */
         }
-        h2 {
-            color: #333;
-            font-size: 20px;  /* 减小 h2 字体大小 */
-        }
-        h3 {
-            font-size: 16px;  /* 减小 h3 字体大小 */
-        }
+        h1 { font-size: 24px; }
+        h2 { font-size: 20px; }
         input[type="text"], textarea {
             width: 100%;
-            padding: 6px;  /* 稍微减小内边距 */
-            margin-bottom: 8px;  /* 稍微减小下边距 */
+            padding: 8px;
+            margin-bottom: 10px;
             border: 1px solid #ddd;
             border-radius: 4px;
             box-sizing: border-box;
-            font-size: 14px;  /* 减小输入框字体大小 */
         }
         textarea {
-            height: 80px;  /* 稍微减小文本区域高度 */
+            height: 100px;
         }
         .command-module, .variable-module {
             background-color: #f9f9f9;
             border: 1px solid #ddd;
-            padding: 12px;  /* 稍微减小内边距 */
-            margin-bottom: 12px;  /* 稍微减小下边距 */
+            padding: 15px;
+            margin-bottom: 15px;
             border-radius: 4px;
         }
         .switch {
             position: relative;
             display: inline-block;
-            width: 40px;  /* 减小开关宽度 */
-            height: 20px;  /* 减小开关高度 */
-            margin-left: 8px;
-            vertical-align: middle;
+            width: 50px;
+            height: 24px;
+            margin-left: 10px;
         }
-        .switch input {
+        .switch input { 
             opacity: 0;
             width: 0;
             height: 0;
@@ -84,13 +77,13 @@
             bottom: 0;
             background-color: #ccc;
             transition: .4s;
-            border-radius: 20px;
+            border-radius: 24px;
         }
         .slider:before {
             position: absolute;
             content: "";
-            height: 14px;  /* 减小滑块大小 */
-            width: 14px;  /* 减小滑块大小 */
+            height: 18px;
+            width: 18px;
             left: 3px;
             bottom: 3px;
             background-color: white;
@@ -101,194 +94,112 @@
             background-color: #2196F3;
         }
         input:checked + .slider:before {
-            transform: translateX(20px);  /* 调整滑块移动距离 */
+            transform: translateX(26px);
         }
-        .status-text {
-            font-size: 0.7em;  /* 减小状态文本大小 */
-            margin-left: 4px;
-            vertical-align: middle;
-        }
-        button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 8px 12px;  /* 减小按钮内边距 */
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;  /* 减小按钮字体大小 */
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-        a {
-            color: #2196F3;
-            text-decoration: none;
-            font-size: 14px;  /* 减小链接字体大小 */
-        }
-        a:hover {
-            text-decoration: underline;
-        }
-        
-        .input-group {
-            margin-bottom: 12px;  /* 减小输入组下边距 */
-        }
-        
-        .input-group label {
-            display: block;
-            margin-bottom: 4px;  /* 减小标签下边距 */
-            font-weight: bold;
-            font-size: 14px;  /* 减小标签字体大小 */
-        }
-        
-        .variable-module {
-            display: flex;
-            flex-direction: column;
-            background-color: #f9f9f9;
-            border: 1px solid #ddd;
-            padding: 8px;
-            margin-bottom: 8px;
-            border-radius: 4px;
-        }
-        
-        .variable-row {
-            display: flex;
-            align-items: center;
-            margin-bottom: 4px;
-        }
-        
-        .variable-row label {
-            width: 50px;
-            margin-right: 8px;
-            text-align: right;
-        }
-        
-        .variable-input {
-            flex: 1;
-        }
-        
-        .variable-input input {
-            width: 100%;
-            padding: 4px;
-            font-size: 12px;
-            height: 24px;
-        }
-        
-        .command-module h3 {
-            display: flex;
-            align-items: center;
-            margin-bottom: 8px;  /* 减小标题下边距 */
-        }
-        
-        .command-module h3 span:first-child {
-            margin-right: 8px;  /* 减小右边距 */
-        }
-        .command-module {
-            background-color: #f9f9f9;
-            border: 1px solid #ddd;
-            padding: 12px;
-            margin-bottom: 12px;
-            border-radius: 4px;
-        }
-        .command-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-        .command-header label {
-            margin-right: 10px;
-        }
-        
         .btn {
             color: white;
-            padding: 8px 12px;
+            padding: 10px 15px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
             font-size: 14px;
             text-decoration: none;
             display: inline-block;
+            margin-top: 10px;
         }
-        
         .btn-primary {
             background-color: #4CAF50;
         }
-        
-        .btn-primary:hover {
-            background-color: #45a049;
-        }
-        
         .btn-save {
             background-color: #2196F3;
+            display: block;
+            width: 100%;
+            text-align: center;
+            margin-top: 20px;
         }
-        
-        .btn-save:hover {
-            background-color: #1e87db;
+        .variable-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .variable-row label {
+            width: 60px;
+            margin-right: 10px;
+            text-align: right;
+        }
+        .variable-input {
+            flex: 1;
+        }
+        .variable-input input {
+            width: 100%;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="main-content">
-            <h1 th:text="${form.name} ? 'Edit Form' : 'Create New Form'"></h1>
-            <form action="/save" method="post" th:object="${form}">
-                <div class="input-group">
-                    <label for="name">Form Name:</label>
-                    <input type="text" id="name" name="name" th:field="*{name}" required>
+        <h1 th:text="${form.name} ? 'Edit Form' : 'Create New Form'"></h1>
+        <form action="/save" method="post">
+            <div class="form-content">
+                <div class="main-content">
+                    <div class="input-group">
+                        <label for="name">Form Name:</label>
+                        <input type="text" id="name" name="name" th:value="${form.name}" required>
+                    </div>
+                    
+                    <h2>Commands</h2>
+                    <div id="commandModules">
+                        <div th:each="command, stat : ${form.commands}" class="command-module">
+                            <div class="command-header">
+                                <label th:for="${'commandNotes' + stat.index}">Command Notes:</label>
+                                <label class="switch">
+                                    <input type="checkbox" th:name="'commandActive[' + ${stat.index} + ']'" th:checked="${command.active}">
+                                    <span class="slider"></span>
+                                </label>
+                                <span class="status-text" th:text="${command.active ? 'ON' : 'OFF'}"></span>
+                            </div>
+                            <input type="text" th:id="${'commandNotes' + stat.index}" th:name="'commandNotes[' + ${stat.index} + ']'" th:value="${command.notes}">
+                            <div class="input-group">
+                                <label th:for="${'commandContents' + stat.index}">Command Content:</label>
+                                <textarea th:id="${'commandContents' + stat.index}" th:name="'commandContents[' + ${stat.index} + ']'" th:text="${command.content}"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="button" onclick="addCommandModule()" class="btn btn-primary">New Command</button>
                 </div>
                 
-                <h2>Commands</h2>
-                <div id="commandModules">
-                    <div th:each="command, stat : ${form.commands}" class="command-module">
-                        <div class="command-header">
-                            <label th:for="${'commandNotes' + stat.index}">Command Notes:</label>
-                            <label class="switch">
-                                <input type="checkbox" th:name="'commandActive[' + ${stat.index} + ']'" th:checked="${command.active}">
-                                <span class="slider"></span>
-                            </label>
-                            <span class="status-text" th:text="${command.active ? 'ON' : 'OFF'}"></span>
-                        </div>
-                        <input type="text" th:id="${'commandNotes' + stat.index}" th:name="'commandNotes[' + ${stat.index} + ']'" th:value="${command.notes}">
-                        <div class="input-group">
-                            <label th:for="${'commandContents' + stat.index}">Command Content:</label>
-                            <textarea th:id="${'commandContents' + stat.index}" th:name="'commandContents[' + ${stat.index} + ']'" th:text="${command.content}"></textarea>
-                        </div>
-                    </div>
-                </div>
-                
-                <button type="button" onclick="addCommandModule()" class="btn btn-primary">New Command</button><br><br>
-                
-                <input type="submit" value="Save Form" class="btn btn-save">
-            </form>
-            <a href="/">Back to Form List</a>
-        </div>
-        
-        <div class="sidebar">
-            <h2>Variables</h2>
-            <div id="variableModules">
-                <div th:each="variable, stat : ${form.variables}" class="variable-module">
-                    <div class="variable-row">
-                        <label th:for="${'variableNotes' + stat.index}">Notes:</label>
-                        <div class="variable-input">
-                            <input type="text" th:id="${'variableNotes' + stat.index}" th:name="'variableNotes[' + ${stat.index} + ']'" th:value="${variable.notes}">
+                <div class="sidebar">
+                    <h2>Variables</h2>
+                    <div id="variableModules">
+                        <div th:each="variable, stat : ${form.variables}" class="variable-module">
+                            <div class="variable-row">
+                                <label th:for="${'variableNotes' + stat.index}">Notes:</label>
+                                <div class="variable-input">
+                                    <input type="text" th:id="${'variableNotes' + stat.index}" th:name="'variableNotes[' + ${stat.index} + ']'" th:value="${variable.notes}">
+                                </div>
+                            </div>
+                            <div class="variable-row">
+                                <label th:for="${'variableKeys' + stat.index}">Key:</label>
+                                <div class="variable-input">
+                                    <input type="text" th:id="${'variableKeys' + stat.index}" th:name="'variableKeys[' + ${stat.index} + ']'" th:value="${variable.key}">
+                                </div>
+                            </div>
+                            <div class="variable-row">
+                                <label th:for="${'variableValues' + stat.index}">Value:</label>
+                                <div class="variable-input">
+                                    <input type="text" th:id="${'variableValues' + stat.index}" th:name="'variableValues[' + ${stat.index} + ']'" th:value="${variable.value}">
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="variable-row">
-                        <label th:for="${'variableKeys' + stat.index}">Key:</label>
-                        <div class="variable-input">
-                            <input type="text" th:id="${'variableKeys' + stat.index}" th:name="'variableKeys[' + ${stat.index} + ']'" th:value="${variable.key}">
-                        </div>
-                    </div>
-                    <div class="variable-row">
-                        <label th:for="${'variableValues' + stat.index}">Value:</label>
-                        <div class="variable-input">
-                            <input type="text" th:id="${'variableValues' + stat.index}" th:name="'variableValues[' + ${stat.index} + ']'" th:value="${variable.value}">
-                        </div>
-                    </div>
+                    <button type="button" onclick="addVariableModule()" class="btn btn-primary">New Variable</button>
                 </div>
             </div>
-            <button type="button" onclick="addVariableModule()" class="btn btn-primary">New Variable</button>
-        </div>
+            
+            <input type="submit" value="Save Form" class="btn btn-save">
+        </form>
     </div>
+    <a href="/" style="display: block; text-align: center; margin-top: 20px;">Back to Form List</a>
 
     <script th:inline="javascript">
         var moduleCount = /*[[${form.commands.size()}]]*/ 0;
@@ -314,7 +225,7 @@
                 const input = document.createElement('input');
                 input.type = 'text';
                 input.id = 'variable' + field + index;
-                input.name = 'variable' + field + 's[' + index + ']';
+                input.name = 'variable' + field + 's[' + index + ']';  // 确保这里使用正确的大小写
                 
                 inputDiv.appendChild(input);
                 row.appendChild(label);
@@ -326,6 +237,7 @@
         }
 
         function addCommandModule() {
+            console.log('Adding new command module');
             const index = document.querySelectorAll('.command-module').length;
             const moduleDiv = document.createElement('div');
             moduleDiv.className = 'command-module';
@@ -382,14 +294,69 @@
             moduleDiv.appendChild(contentGroup);
             
             document.getElementById('commandModules').appendChild(moduleDiv);
+            console.log('New command module added');
         }
 
-        // 为现有的开关添加事件监听器
+        // 为有的开关添加事件监听器
         document.querySelectorAll('input[name^="commandActive"]').forEach(function(checkbox) {
             checkbox.addEventListener('change', function() {
                 const statusSpan = this.closest('h3').querySelector('.status-text');
                 statusSpan.textContent = this.checked ? 'ON' : 'OFF';
             });
+        });
+
+        function logFormData() {
+            console.log('Form data:');
+            console.log('Form name:', document.getElementById('name').value);
+            
+            console.log('Variables:');
+            document.querySelectorAll('.variable-module').forEach((module, index) => {
+                const notesInput = module.querySelector('input[name^="variableNotes"]');
+                const keyInput = module.querySelector('input[name^="variableKeys"]');
+                const valueInput = module.querySelector('input[name^="variableValues"]');
+                
+                console.log(`Variable ${index}:`, {
+                    notes: notesInput ? notesInput.value : 'N/A',
+                    key: keyInput ? keyInput.value : 'N/A',
+                    value: valueInput ? valueInput.value : 'N/A'
+                });
+            });
+            
+            console.log('Commands:');
+            document.querySelectorAll('.command-module').forEach((module, index) => {
+                const notesInput = module.querySelector('input[name^="commandNotes"]');
+                const contentTextarea = module.querySelector('textarea[name^="commandContents"]');
+                const activeCheckbox = module.querySelector('input[name^="commandActive"]');
+                
+                console.log(`Command ${index}:`, {
+                    notes: notesInput ? notesInput.value : 'N/A',
+                    content: contentTextarea ? contentTextarea.value : 'N/A',
+                    active: activeCheckbox ? activeCheckbox.checked : false
+                });
+            });
+
+            // 添加表单数据的详细日志
+            console.log('Form data (detailed):');
+            const formData = new FormData(document.querySelector('form'));
+            for (let [key, value] of formData.entries()) {
+                console.log(`${key}: ${value}`);
+            }
+        }
+
+        // 在表单提交时记录数据
+        document.querySelector('form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            console.log('Form submission started');
+            logFormData();
+            console.log('Form submission completed');
+            this.submit();
+        });
+
+        // 页面加载完成时的日志
+        window.addEventListener('load', function() {
+            console.log('Page loaded');
+            console.log('Initial form state:');
+            logFormData();
         });
     </script>
 </body>

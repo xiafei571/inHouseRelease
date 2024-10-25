@@ -35,43 +35,62 @@ public class FormController {
     }
 
     @PostMapping("/save")
-    public String saveForm(@ModelAttribute Form form,
-                           @RequestParam Map<String, String> allParams) throws IOException {
-        logger.debug("Received form: {}", form);
+    public String saveForm(@RequestParam Map<String, String> allParams) throws IOException {
         logger.debug("Received all parameters: {}", allParams);
+
+        Form form = new Form();
+        form.setName(allParams.get("name"));
+        logger.debug("Form name: {}", form.getName());
 
         List<Form.Variable> variables = new ArrayList<>();
         List<Form.Command> commands = new ArrayList<>();
 
         // Process variables
-        for (int i = 0; ; i++) {
+        for (int i = 0; i < 100; i++) {
             String notes = allParams.get("variableNotes[" + i + "]");
             String key = allParams.get("variableKeys[" + i + "]");
             String value = allParams.get("variableValues[" + i + "]");
+            
+            logger.debug("Checking variable {}: notes={}, key={}, value={}", i, notes, key, value);
+            
             if (notes == null && key == null && value == null) {
+                logger.debug("No more variables found after index {}", i);
                 break;
             }
+            
+            // 检查可能的拼写错误
+            if (notes == null) notes = allParams.get("variableNotess[" + i + "]");
+            if (key == null) key = allParams.get("variablekeys[" + i + "]");
+            if (value == null) value = allParams.get("variablevalues[" + i + "]");
+            
             Form.Variable variable = new Form.Variable();
             variable.setNotes(notes);
             variable.setKey(key);
             variable.setValue(value);
             variables.add(variable);
-            logger.debug("Added variable: {}", variable);
+            logger.debug("Added variable {}: notes={}, key={}, value={}", 
+                i, variable.getNotes(), variable.getKey(), variable.getValue());
         }
 
         // Process commands
-        for (int i = 0; ; i++) {
+        for (int i = 0; i < 100; i++) {
             String notes = allParams.get("commandNotes[" + i + "]");
             String content = allParams.get("commandContents[" + i + "]");
+            
+            logger.debug("Checking command {}: notes={}, content={}", i, notes, content);
+            
             if (notes == null && content == null) {
+                logger.debug("No more commands found after index {}", i);
                 break;
             }
+            
             Form.Command command = new Form.Command();
             command.setNotes(notes);
             command.setContent(content);
             command.setActive(allParams.containsKey("commandActive[" + i + "]"));
             commands.add(command);
-            logger.debug("Added command: {}", command);
+            logger.debug("Added command {}: notes={}, content={}, active={}", 
+                i, command.getNotes(), command.getContent(), command.isActive());
         }
 
         form.setVariables(variables);

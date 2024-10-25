@@ -3,9 +3,12 @@ variables:
 - notes: a
   key: b
   value: c
-- notes: c
-  key: d
-  value: e
+- notes: b
+  key: c
+  value: d
+- notes: d
+  key: e
+  value: f
 commands:
 - module: commandModule_1
   notes: aaa
@@ -15,3 +18,7 @@ commands:
   notes: ccc
   content: ddd
   active: false
+- module: commandModule_3
+  notes: fff
+  content: ddd
+  active: true

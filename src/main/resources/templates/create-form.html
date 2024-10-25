@@ -10,6 +10,7 @@
             margin: 0;
             padding: 20px;
             background-color: #f4f4f4;
+            font-size: 14px;  /* 减小基础字体大小 */
         }
         .container {
             max-width: 800px;
@@ -19,33 +20,42 @@
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
-        h1, h2 {
+        h1 {
             color: #333;
+            font-size: 24px;  /* 减小 h1 字体大小 */
+        }
+        h2 {
+            color: #333;
+            font-size: 20px;  /* 减小 h2 字体大小 */
+        }
+        h3 {
+            font-size: 16px;  /* 减小 h3 字体大小 */
         }
         input[type="text"], textarea {
             width: 100%;
-            padding: 8px;
-            margin-bottom: 10px;
+            padding: 6px;  /* 稍微减小内边距 */
+            margin-bottom: 8px;  /* 稍微减小下边距 */
             border: 1px solid #ddd;
             border-radius: 4px;
             box-sizing: border-box;
+            font-size: 14px;  /* 减小输入框字体大小 */
         }
         textarea {
-            height: 100px;
+            height: 80px;  /* 稍微减小文本区域高度 */
         }
         .command-module, .variable-module {
             background-color: #f9f9f9;
             border: 1px solid #ddd;
-            padding: 15px;
-            margin-bottom: 15px;
+            padding: 12px;  /* 稍微减小内边距 */
+            margin-bottom: 12px;  /* 稍微减小下边距 */
             border-radius: 4px;
         }
         .switch {
             position: relative;
             display: inline-block;
-            width: 50px;
-            height: 24px;
-            margin-left: 10px;
+            width: 40px;  /* 减小开关宽度 */
+            height: 20px;  /* 减小开关高度 */
+            margin-left: 8px;
             vertical-align: middle;
         }
         .switch input {
@@ -62,13 +72,13 @@
             bottom: 0;
             background-color: #ccc;
             transition: .4s;
-            border-radius: 24px;
+            border-radius: 20px;
         }
         .slider:before {
             position: absolute;
             content: "";
-            height: 18px;
-            width: 18px;
+            height: 14px;  /* 减小滑块大小 */
+            width: 14px;  /* 减小滑块大小 */
             left: 3px;
             bottom: 3px;
             background-color: white;
@@ -79,21 +89,21 @@
             background-color: #2196F3;
         }
         input:checked + .slider:before {
-            transform: translateX(26px);
+            transform: translateX(20px);  /* 调整滑块移动距离 */
         }
         .status-text {
-            font-size: 0.8em;
-            margin-left: 5px;
+            font-size: 0.7em;  /* 减小状态文本大小 */
+            margin-left: 4px;
             vertical-align: middle;
         }
         button {
             background-color: #4CAF50;
             color: white;
-            padding: 10px 15px;
+            padding: 8px 12px;  /* 减小按钮内边距 */
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 14px;  /* 减小按钮字体大小 */
         }
         button:hover {
             background-color: #45a049;
@@ -101,25 +111,46 @@
         a {
             color: #2196F3;
             text-decoration: none;
+            font-size: 14px;  /* 减小链接字体大小 */
         }
         a:hover {
             text-decoration: underline;
         }
         
+        .input-group {
+            margin-bottom: 12px;  /* 减小输入组下边距 */
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 4px;  /* 减小标签下边距 */
+            font-weight: bold;
+            font-size: 14px;  /* 减小标签字体大小 */
+        }
+        
         .variable-module {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
             background-color: #f9f9f9;
             border: 1px solid #ddd;
-            padding: 15px;
-            margin-bottom: 15px;
+            padding: 12px;  /* 减小内边距 */
+            margin-bottom: 12px;  /* 减小下边距 */
             border-radius: 4px;
         }
         
         .variable-input {
             width: 30%;
-            margin-right: 10px;
+        }
+        
+        .command-module h3 {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;  /* 减小标题下边距 */
+        }
+        
+        .command-module h3 span:first-child {
+            margin-right: 8px;  /* 减小右边距 */
         }
     </style>
 </head>
@@ -127,14 +158,26 @@
     <div class="container">
         <h1 th:text="${form.name} ? 'Edit Form' : 'Create New Form'"></h1>
         <form action="/save" method="post" th:object="${form}">
-            <input type="text" id="name" name="name" th:field="*{name}" required placeholder="Form Name"><br><br>
+            <div class="input-group">
+                <label for="name">Form Name:</label>
+                <input type="text" id="name" name="name" th:field="*{name}" required>
+            </div>
             
             <h2>Variables</h2>
             <div id="variableModules">
                 <div th:each="variable, stat : ${form.variables}" class="variable-module">
-                    <input type="text" class="variable-input" th:name="'variableNotes[' + ${stat.index} + ']'" th:value="${variable.notes}" placeholder="Notes">
-                    <input type="text" class="variable-input" th:name="'variableKeys[' + ${stat.index} + ']'" th:value="${variable.key}" placeholder="Key">
-                    <input type="text" class="variable-input" th:name="'variableValues[' + ${stat.index} + ']'" th:value="${variable.value}" placeholder="Value">
+                    <div class="variable-input">
+                        <label th:for="${'variableNotes' + stat.index}">Notes:</label>
+                        <input type="text" th:id="${'variableNotes' + stat.index}" th:name="'variableNotes[' + ${stat.index} + ']'" th:value="${variable.notes}">
+                    </div>
+                    <div class="variable-input">
+                        <label th:for="${'variableKeys' + stat.index}">Key:</label>
+                        <input type="text" th:id="${'variableKeys' + stat.index}" th:name="'variableKeys[' + ${stat.index} + ']'" th:value="${variable.key}">
+                    </div>
+                    <div class="variable-input">
+                        <label th:for="${'variableValues' + stat.index}">Value:</label>
+                        <input type="text" th:id="${'variableValues' + stat.index}" th:name="'variableValues[' + ${stat.index} + ']'" th:value="${variable.value}">
+                    </div>
                 </div>
             </div>
             <button type="button" onclick="addVariableModule()">New Variable</button><br><br>
@@ -150,8 +193,14 @@
                         </label>
                         <span class="status-text" th:text="${command.active ? 'ON' : 'OFF'}"></span>
                     </h3>
-                    <input type="text" th:name="'commandNotes[' + ${stat.index} + ']'" th:value="${command.notes}" placeholder="Command Notes">
-                    <textarea th:name="'commandContents[' + ${stat.index} + ']'" th:text="${command.content}" placeholder="Command Content"></textarea>
+                    <div class="input-group">
+                        <label th:for="${'commandNotes' + stat.index}">Command Notes:</label>
+                        <input type="text" th:id="${'commandNotes' + stat.index}" th:name="'commandNotes[' + ${stat.index} + ']'" th:value="${command.notes}">
+                    </div>
+                    <div class="input-group">
+                        <label th:for="${'commandContents' + stat.index}">Command Content:</label>
+                        <textarea th:id="${'commandContents' + stat.index}" th:name="'commandContents[' + ${stat.index} + ']'" th:text="${command.content}"></textarea>
+                    </div>
                 </div>
             </div>
             
@@ -171,27 +220,24 @@
             const moduleDiv = document.createElement('div');
             moduleDiv.className = 'variable-module';
             
-            const notesInput = document.createElement('input');
-            notesInput.type = 'text';
-            notesInput.className = 'variable-input';
-            notesInput.name = 'variableNotes[' + index + ']';
-            notesInput.placeholder = 'Notes';
-            
-            const keyInput = document.createElement('input');
-            keyInput.type = 'text';
-            keyInput.className = 'variable-input';
-            keyInput.name = 'variableKeys[' + index + ']';
-            keyInput.placeholder = 'Key';
-            
-            const valueInput = document.createElement('input');
-            valueInput.type = 'text';
-            valueInput.className = 'variable-input';
-            valueInput.name = 'variableValues[' + index + ']';
-            valueInput.placeholder = 'Value';
-            
-            moduleDiv.appendChild(notesInput);
-            moduleDiv.appendChild(keyInput);
-            moduleDiv.appendChild(valueInput);
+            const fields = ['Notes', 'Key', 'Value'];
+            fields.forEach(field => {
+                const inputGroup = document.createElement('div');
+                inputGroup.className = 'variable-input';
+                
+                const label = document.createElement('label');
+                label.textContent = field + ':';
+                label.htmlFor = 'variable' + field + index;
+                
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.id = 'variable' + field + index;
+                input.name = 'variable' + field + 's[' + index + ']';
+                
+                inputGroup.appendChild(label);
+                inputGroup.appendChild(input);
+                moduleDiv.appendChild(inputGroup);
+            });
             
             document.getElementById('variableModules').appendChild(moduleDiv);
         }
@@ -228,18 +274,32 @@
                 statusSpan.textContent = this.checked ? 'ON' : 'OFF';
             });
             
+            const notesGroup = document.createElement('div');
+            notesGroup.className = 'input-group';
+            const notesLabel = document.createElement('label');
+            notesLabel.textContent = 'Command Notes:';
+            notesLabel.htmlFor = 'commandNotes' + index;
             const noteInput = document.createElement('input');
             noteInput.type = 'text';
+            noteInput.id = 'commandNotes' + index;
             noteInput.name = 'commandNotes[' + index + ']';
-            noteInput.placeholder = 'Command Notes';
+            notesGroup.appendChild(notesLabel);
+            notesGroup.appendChild(noteInput);
             
+            const contentGroup = document.createElement('div');
+            contentGroup.className = 'input-group';
+            const contentLabel = document.createElement('label');
+            contentLabel.textContent = 'Command Content:';
+            contentLabel.htmlFor = 'commandContents' + index;
             const contentTextarea = document.createElement('textarea');
+            contentTextarea.id = 'commandContents' + index;
             contentTextarea.name = 'commandContents[' + index + ']';
-            contentTextarea.placeholder = 'Command Content';
+            contentGroup.appendChild(contentLabel);
+            contentGroup.appendChild(contentTextarea);
             
             moduleDiv.appendChild(moduleHeader);
-            moduleDiv.appendChild(noteInput);
-            moduleDiv.appendChild(contentTextarea);
+            moduleDiv.appendChild(notesGroup);
+            moduleDiv.appendChild(contentGroup);
             
             document.getElementById('commandModules').appendChild(moduleDiv);
         }

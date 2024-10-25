@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Form</title>
+</head>
+<body>
+    <h1 th:text="${form.name} ? 'Edit Form' : 'Create New Form'"></h1>
+    <form action="/save" method="post" th:object="${form}">
+        <label for="name">Form Name:</label>
+        <input type="text" id="name" name="name" th:field="*{name}" required><br><br>
+        <label for="content">Form Content:</label><br>
+        <textarea id="content" name="content" th:field="*{content}" rows="10" cols="50" required></textarea><br><br>
+        <input type="submit" value="Save Form">
+    </form>
+    <a href="/">Back to Form List</a>
+</body>
+</html>

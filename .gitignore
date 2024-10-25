@@ -1,0 +1,26 @@
+# Maven
+target/
+*.jar
+*.war
+*.ear
+*.class
+
+# Eclipse
+.project
+.classpath
+.settings/
+
+# Intellij
+.idea/
+*.iml
+*.iws
+
+# Mac
+.DS_Store
+
+# Java
+*.log
+
+# Spring Boot
+spring-boot-*.pid
+

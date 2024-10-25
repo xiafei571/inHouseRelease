@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Form List</title>
+</head>
+<body>
+    <h1>Form List</h1>
+    <a href="/create">Create New Form</a>
+    <ul>
+        <li th:each="form : ${forms}">
+            <a th:href="@{/edit/{name}(name=${form})}" th:text="${form}"></a>
+        </li>
+    </ul>
+</body>
+</html>

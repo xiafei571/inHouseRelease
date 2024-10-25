@@ -1,0 +1,17 @@
+name: test1
+variables:
+- notes: a
+  key: b
+  value: c
+- notes: c
+  key: d
+  value: e
+commands:
+- module: commandModule_1
+  notes: aaa
+  content: bbb
+  active: true
+- module: commandModule_2
+  notes: ccc
+  content: ddd
+  active: false

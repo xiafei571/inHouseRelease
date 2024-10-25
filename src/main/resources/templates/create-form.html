@@ -4,15 +4,46 @@
     <meta charset="UTF-8">
     <title>Create Form</title>
     <style>
-        .command-module, .variable-module {
-            border: 1px solid #ccc;
-            padding: 10px;
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 8px;
             margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        textarea {
+            height: 100px;
+        }
+        .command-module, .variable-module {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 4px;
         }
         .switch {
             position: relative;
             display: inline-block;
-            width: 40px;
+            width: 50px;
             height: 24px;
             margin-left: 10px;
             vertical-align: middle;
@@ -48,51 +79,88 @@
             background-color: #2196F3;
         }
         input:checked + .slider:before {
-            transform: translateX(16px);
+            transform: translateX(26px);
         }
         .status-text {
             font-size: 0.8em;
             margin-left: 5px;
             vertical-align: middle;
         }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        a {
+            color: #2196F3;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        
+        .variable-module {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+        }
+        
+        .variable-input {
+            width: 30%;
+            margin-right: 10px;
+        }
     </style>
 </head>
 <body>
-    <h1 th:text="${form.name} ? 'Edit Form' : 'Create New Form'"></h1>
-    <form action="/save" method="post" th:object="${form}">
-        <input type="text" id="name" name="name" th:field="*{name}" required><br><br>
-        
-        <h2>Variables</h2>
-        <div id="variableModules">
-            <div th:each="variable, stat : ${form.variables}" class="variable-module">
-                <input type="text" th:name="'variableNotes[' + ${stat.index} + ']'" th:value="${variable.notes}" placeholder="Notes">
-                <input type="text" th:name="'variableKeys[' + ${stat.index} + ']'" th:value="${variable.key}" placeholder="Key">
-                <input type="text" th:name="'variableValues[' + ${stat.index} + ']'" th:value="${variable.value}" placeholder="Value">
+    <div class="container">
+        <h1 th:text="${form.name} ? 'Edit Form' : 'Create New Form'"></h1>
+        <form action="/save" method="post" th:object="${form}">
+            <input type="text" id="name" name="name" th:field="*{name}" required placeholder="Form Name"><br><br>
+            
+            <h2>Variables</h2>
+            <div id="variableModules">
+                <div th:each="variable, stat : ${form.variables}" class="variable-module">
+                    <input type="text" class="variable-input" th:name="'variableNotes[' + ${stat.index} + ']'" th:value="${variable.notes}" placeholder="Notes">
+                    <input type="text" class="variable-input" th:name="'variableKeys[' + ${stat.index} + ']'" th:value="${variable.key}" placeholder="Key">
+                    <input type="text" class="variable-input" th:name="'variableValues[' + ${stat.index} + ']'" th:value="${variable.value}" placeholder="Value">
+                </div>
             </div>
-        </div>
-        <button type="button" onclick="addVariableModule()">New Variable</button><br><br>
-        
-        <h2>Commands</h2>
-        <div id="commandModules">
-            <div th:each="command, stat : ${form.commands}" class="command-module">
-                <h3>
-                    <span th:text="'commandModule_' + ${stat.index + 1}"></span>
-                    <label class="switch">
-                        <input type="checkbox" th:name="'commandActive[' + ${stat.index} + ']'" th:checked="${command.active}">
-                        <span class="slider"></span>
-                    </label>
-                    <span class="status-text" th:text="${command.active ? 'ON' : 'OFF'}"></span>
-                </h3>
-                <input type="text" th:name="'commandNotes[' + ${stat.index} + ']'" th:value="${command.notes}">
-                <textarea th:name="'commandContents[' + ${stat.index} + ']'" th:text="${command.content}"></textarea>
+            <button type="button" onclick="addVariableModule()">New Variable</button><br><br>
+            
+            <h2>Commands</h2>
+            <div id="commandModules">
+                <div th:each="command, stat : ${form.commands}" class="command-module">
+                    <h3>
+                        <span th:text="'Command Module ' + ${stat.index + 1}"></span>
+                        <label class="switch">
+                            <input type="checkbox" th:name="'commandActive[' + ${stat.index} + ']'" th:checked="${command.active}">
+                            <span class="slider"></span>
+                        </label>
+                        <span class="status-text" th:text="${command.active ? 'ON' : 'OFF'}"></span>
+                    </h3>
+                    <input type="text" th:name="'commandNotes[' + ${stat.index} + ']'" th:value="${command.notes}" placeholder="Command Notes">
+                    <textarea th:name="'commandContents[' + ${stat.index} + ']'" th:text="${command.content}" placeholder="Command Content"></textarea>
+                </div>
             </div>
-        </div>
-        
-        <button type="button" onclick="addCommandModule()">New Command</button><br><br>
-        
-        <input type="submit" value="Save Form">
-    </form>
-    <a href="/">Back to Form List</a>
+            
+            <button type="button" onclick="addCommandModule()">New Command</button><br><br>
+            
+            <input type="submit" value="Save Form">
+        </form>
+        <a href="/">Back to Form List</a>
+    </div>
 
     <script th:inline="javascript">
         var moduleCount = /*[[${form.commands.size()}]]*/ 0;
@@ -105,16 +173,19 @@
             
             const notesInput = document.createElement('input');
             notesInput.type = 'text';
+            notesInput.className = 'variable-input';
             notesInput.name = 'variableNotes[' + index + ']';
             notesInput.placeholder = 'Notes';
             
             const keyInput = document.createElement('input');
             keyInput.type = 'text';
+            keyInput.className = 'variable-input';
             keyInput.name = 'variableKeys[' + index + ']';
             keyInput.placeholder = 'Key';
             
             const valueInput = document.createElement('input');
             valueInput.type = 'text';
+            valueInput.className = 'variable-input';
             valueInput.name = 'variableValues[' + index + ']';
             valueInput.placeholder = 'Value';
             
@@ -133,7 +204,7 @@
             const moduleHeader = document.createElement('h3');
             
             const moduleSpan = document.createElement('span');
-            moduleSpan.textContent = 'commandModule_' + moduleCount;
+            moduleSpan.textContent = 'Command Module ' + (index + 1);
             moduleHeader.appendChild(moduleSpan);
             
             const switchLabel = document.createElement('label');
@@ -141,7 +212,7 @@
             const switchInput = document.createElement('input');
             switchInput.type = 'checkbox';
             switchInput.name = 'commandActive[' + index + ']';
-            switchInput.checked = true;  // 默认为选中状态
+            switchInput.checked = true;
             const switchSpan = document.createElement('span');
             switchSpan.className = 'slider';
             switchLabel.appendChild(switchInput);
@@ -157,42 +228,26 @@
                 statusSpan.textContent = this.checked ? 'ON' : 'OFF';
             });
             
-            const noteLabel = document.createElement('label');
-            noteLabel.textContent = 'Command Notes:';
             const noteInput = document.createElement('input');
             noteInput.type = 'text';
             noteInput.name = 'commandNotes[' + index + ']';
             noteInput.placeholder = 'Command Notes';
             
-            const contentLabel = document.createElement('label');
-            contentLabel.textContent = 'Command Content:';
             const contentTextarea = document.createElement('textarea');
             contentTextarea.name = 'commandContents[' + index + ']';
             contentTextarea.placeholder = 'Command Content';
-            contentTextarea.rows = 4;
-            contentTextarea.cols = 50;
             
             moduleDiv.appendChild(moduleHeader);
-            moduleDiv.appendChild(noteLabel);
             moduleDiv.appendChild(noteInput);
-            moduleDiv.appendChild(document.createElement('br'));
-            moduleDiv.appendChild(document.createElement('br'));
-            moduleDiv.appendChild(contentLabel);
-            moduleDiv.appendChild(document.createElement('br'));
             moduleDiv.appendChild(contentTextarea);
             
             document.getElementById('commandModules').appendChild(moduleDiv);
         }
 
-        // Add existing command modules
-        /*[# th:each="command : ${form.commands}"]*/
-            moduleCount++;
-        /*[/]*/
-
         // 为现有的开关添加事件监听器
-        document.querySelectorAll('input[name="commandActive"]').forEach(function(checkbox) {
+        document.querySelectorAll('input[name^="commandActive"]').forEach(function(checkbox) {
             checkbox.addEventListener('change', function() {
-                const statusSpan = this.closest('h3').querySelector('span:last-child');
+                const statusSpan = this.closest('h3').querySelector('.status-text');
                 statusSpan.textContent = this.checked ? 'ON' : 'OFF';
             });
         });

@@ -59,9 +59,9 @@
         .switch {
             position: relative;
             display: inline-block;
-            width: 50px;
-            height: 24px;
-            margin-left: 10px;
+            width: 40px;  /* 减小宽度 */
+            height: 20px; /* 减小高度 */
+            margin-left: 8px;
         }
         .switch input { 
             opacity: 0;
@@ -77,13 +77,13 @@
             bottom: 0;
             background-color: #ccc;
             transition: .4s;
-            border-radius: 24px;
+            border-radius: 20px;
         }
         .slider:before {
             position: absolute;
             content: "";
-            height: 18px;
-            width: 18px;
+            height: 14px;  /* 减小滑块大小 */
+            width: 14px;   /* 减小滑块大小 */
             left: 3px;
             bottom: 3px;
             background-color: white;
@@ -94,7 +94,7 @@
             background-color: #2196F3;
         }
         input:checked + .slider:before {
-            transform: translateX(26px);
+            transform: translateX(20px);  /* 调整滑块移动距离 */
         }
         .btn {
             color: white;
@@ -132,6 +132,32 @@
         }
         .variable-input input {
             width: 100%;
+        }
+        .variable-module {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 10px;  /* 减小内边距 */
+            margin-bottom: 10px;  /* 减小下边距 */
+            border-radius: 4px;
+        }
+        .variable-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 6px;  /* 减小行间距 */
+        }
+        .variable-row label {
+            width: 50px;  /* 减小标签宽度 */
+            margin-right: 8px;
+            text-align: right;
+            font-size: 12px;  /* 减小字体大小 */
+        }
+        .variable-input {
+            flex: 1;
+        }
+        .variable-input input {
+            width: 100%;
+            padding: 4px;  /* 减小输入框内边距 */
+            font-size: 12px;  /* 减小字体大小 */
         }
     </style>
 </head>

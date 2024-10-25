@@ -3,16 +3,199 @@
 <head>
     <meta charset="UTF-8">
     <title>Create Form</title>
+    <style>
+        .command-module, .variable-module {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 24px;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+        input:checked + .slider:before {
+            transform: translateX(16px);
+        }
+        .status-text {
+            font-size: 0.8em;
+            margin-left: 5px;
+            vertical-align: middle;
+        }
+    </style>
 </head>
 <body>
     <h1 th:text="${form.name} ? 'Edit Form' : 'Create New Form'"></h1>
     <form action="/save" method="post" th:object="${form}">
-        <label for="name">Form Name:</label>
         <input type="text" id="name" name="name" th:field="*{name}" required><br><br>
-        <label for="content">Form Content:</label><br>
-        <textarea id="content" name="content" th:field="*{content}" rows="10" cols="50" required></textarea><br><br>
+        
+        <h2>Variables</h2>
+        <div id="variableModules">
+            <div th:each="variable, stat : ${form.variables}" class="variable-module">
+                <input type="text" th:name="'variableNotes[' + ${stat.index} + ']'" th:value="${variable.notes}" placeholder="Notes">
+                <input type="text" th:name="'variableKeys[' + ${stat.index} + ']'" th:value="${variable.key}" placeholder="Key">
+                <input type="text" th:name="'variableValues[' + ${stat.index} + ']'" th:value="${variable.value}" placeholder="Value">
+            </div>
+        </div>
+        <button type="button" onclick="addVariableModule()">New Variable</button><br><br>
+        
+        <h2>Commands</h2>
+        <div id="commandModules">
+            <div th:each="command, stat : ${form.commands}" class="command-module">
+                <h3>
+                    <span th:text="'commandModule_' + ${stat.index + 1}"></span>
+                    <label class="switch">
+                        <input type="checkbox" th:name="'commandActive[' + ${stat.index} + ']'" th:checked="${command.active}">
+                        <span class="slider"></span>
+                    </label>
+                    <span class="status-text" th:text="${command.active ? 'ON' : 'OFF'}"></span>
+                </h3>
+                <input type="text" th:name="'commandNotes[' + ${stat.index} + ']'" th:value="${command.notes}">
+                <textarea th:name="'commandContents[' + ${stat.index} + ']'" th:text="${command.content}"></textarea>
+            </div>
+        </div>
+        
+        <button type="button" onclick="addCommandModule()">New Command</button><br><br>
+        
         <input type="submit" value="Save Form">
     </form>
     <a href="/">Back to Form List</a>
+
+    <script th:inline="javascript">
+        var moduleCount = /*[[${form.commands.size()}]]*/ 0;
+        var variableCount = /*[[${form.variables.size()}]]*/ 0;
+
+        function addVariableModule() {
+            const index = document.querySelectorAll('.variable-module').length;
+            const moduleDiv = document.createElement('div');
+            moduleDiv.className = 'variable-module';
+            
+            const notesInput = document.createElement('input');
+            notesInput.type = 'text';
+            notesInput.name = 'variableNotes[' + index + ']';
+            notesInput.placeholder = 'Notes';
+            
+            const keyInput = document.createElement('input');
+            keyInput.type = 'text';
+            keyInput.name = 'variableKeys[' + index + ']';
+            keyInput.placeholder = 'Key';
+            
+            const valueInput = document.createElement('input');
+            valueInput.type = 'text';
+            valueInput.name = 'variableValues[' + index + ']';
+            valueInput.placeholder = 'Value';
+            
+            moduleDiv.appendChild(notesInput);
+            moduleDiv.appendChild(keyInput);
+            moduleDiv.appendChild(valueInput);
+            
+            document.getElementById('variableModules').appendChild(moduleDiv);
+        }
+
+        function addCommandModule() {
+            const index = document.querySelectorAll('.command-module').length;
+            const moduleDiv = document.createElement('div');
+            moduleDiv.className = 'command-module';
+            
+            const moduleHeader = document.createElement('h3');
+            
+            const moduleSpan = document.createElement('span');
+            moduleSpan.textContent = 'commandModule_' + moduleCount;
+            moduleHeader.appendChild(moduleSpan);
+            
+            const switchLabel = document.createElement('label');
+            switchLabel.className = 'switch';
+            const switchInput = document.createElement('input');
+            switchInput.type = 'checkbox';
+            switchInput.name = 'commandActive[' + index + ']';
+            switchInput.checked = true;  // 默认为选中状态
+            const switchSpan = document.createElement('span');
+            switchSpan.className = 'slider';
+            switchLabel.appendChild(switchInput);
+            switchLabel.appendChild(switchSpan);
+            moduleHeader.appendChild(switchLabel);
+            
+            const statusSpan = document.createElement('span');
+            statusSpan.className = 'status-text';
+            statusSpan.textContent = 'ON';
+            moduleHeader.appendChild(statusSpan);
+            
+            switchInput.addEventListener('change', function() {
+                statusSpan.textContent = this.checked ? 'ON' : 'OFF';
+            });
+            
+            const noteLabel = document.createElement('label');
+            noteLabel.textContent = 'Command Notes:';
+            const noteInput = document.createElement('input');
+            noteInput.type = 'text';
+            noteInput.name = 'commandNotes[' + index + ']';
+            noteInput.placeholder = 'Command Notes';
+            
+            const contentLabel = document.createElement('label');
+            contentLabel.textContent = 'Command Content:';
+            const contentTextarea = document.createElement('textarea');
+            contentTextarea.name = 'commandContents[' + index + ']';
+            contentTextarea.placeholder = 'Command Content';
+            contentTextarea.rows = 4;
+            contentTextarea.cols = 50;
+            
+            moduleDiv.appendChild(moduleHeader);
+            moduleDiv.appendChild(noteLabel);
+            moduleDiv.appendChild(noteInput);
+            moduleDiv.appendChild(document.createElement('br'));
+            moduleDiv.appendChild(document.createElement('br'));
+            moduleDiv.appendChild(contentLabel);
+            moduleDiv.appendChild(document.createElement('br'));
+            moduleDiv.appendChild(contentTextarea);
+            
+            document.getElementById('commandModules').appendChild(moduleDiv);
+        }
+
+        // Add existing command modules
+        /*[# th:each="command : ${form.commands}"]*/
+            moduleCount++;
+        /*[/]*/
+
+        // 为现有的开关添加事件监听器
+        document.querySelectorAll('input[name="commandActive"]').forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                const statusSpan = this.closest('h3').querySelector('span:last-child');
+                statusSpan.textContent = this.checked ? 'ON' : 'OFF';
+            });
+        });
+    </script>
 </body>
 </html>

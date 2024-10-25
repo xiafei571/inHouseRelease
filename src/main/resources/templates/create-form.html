@@ -13,6 +13,18 @@
             font-size: 14px;  /* 减小基础字体大小 */
         }
         .container {
+            max-width: 1200px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .main-content {
+            width: 65%;
+        }
+        .sidebar {
+            width: 30%;
+            font-size: 12px; /* 减小 Variables 部分的字体大小 */
+        }
+        .container {
             max-width: 800px;
             margin: auto;
             background: white;
@@ -130,17 +142,35 @@
         
         .variable-module {
             display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
+            flex-direction: column;
             background-color: #f9f9f9;
             border: 1px solid #ddd;
-            padding: 12px;  /* 减小内边距 */
-            margin-bottom: 12px;  /* 减小下边距 */
+            padding: 8px;
+            margin-bottom: 8px;
             border-radius: 4px;
         }
         
+        .variable-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+        
+        .variable-row label {
+            width: 50px;
+            margin-right: 8px;
+            text-align: right;
+        }
+        
         .variable-input {
-            width: 30%;
+            flex: 1;
+        }
+        
+        .variable-input input {
+            width: 100%;
+            padding: 4px;
+            font-size: 12px;
+            height: 24px;
         }
         
         .command-module h3 {
@@ -152,63 +182,112 @@
         .command-module h3 span:first-child {
             margin-right: 8px;  /* 减小右边距 */
         }
+        .command-module {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 12px;
+            margin-bottom: 12px;
+            border-radius: 4px;
+        }
+        .command-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .command-header label {
+            margin-right: 10px;
+        }
+        
+        .btn {
+            color: white;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background-color: #4CAF50;
+        }
+        
+        .btn-primary:hover {
+            background-color: #45a049;
+        }
+        
+        .btn-save {
+            background-color: #2196F3;
+        }
+        
+        .btn-save:hover {
+            background-color: #1e87db;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1 th:text="${form.name} ? 'Edit Form' : 'Create New Form'"></h1>
-        <form action="/save" method="post" th:object="${form}">
-            <div class="input-group">
-                <label for="name">Form Name:</label>
-                <input type="text" id="name" name="name" th:field="*{name}" required>
-            </div>
-            
+        <div class="main-content">
+            <h1 th:text="${form.name} ? 'Edit Form' : 'Create New Form'"></h1>
+            <form action="/save" method="post" th:object="${form}">
+                <div class="input-group">
+                    <label for="name">Form Name:</label>
+                    <input type="text" id="name" name="name" th:field="*{name}" required>
+                </div>
+                
+                <h2>Commands</h2>
+                <div id="commandModules">
+                    <div th:each="command, stat : ${form.commands}" class="command-module">
+                        <div class="command-header">
+                            <label th:for="${'commandNotes' + stat.index}">Command Notes:</label>
+                            <label class="switch">
+                                <input type="checkbox" th:name="'commandActive[' + ${stat.index} + ']'" th:checked="${command.active}">
+                                <span class="slider"></span>
+                            </label>
+                            <span class="status-text" th:text="${command.active ? 'ON' : 'OFF'}"></span>
+                        </div>
+                        <input type="text" th:id="${'commandNotes' + stat.index}" th:name="'commandNotes[' + ${stat.index} + ']'" th:value="${command.notes}">
+                        <div class="input-group">
+                            <label th:for="${'commandContents' + stat.index}">Command Content:</label>
+                            <textarea th:id="${'commandContents' + stat.index}" th:name="'commandContents[' + ${stat.index} + ']'" th:text="${command.content}"></textarea>
+                        </div>
+                    </div>
+                </div>
+                
+                <button type="button" onclick="addCommandModule()" class="btn btn-primary">New Command</button><br><br>
+                
+                <input type="submit" value="Save Form" class="btn btn-save">
+            </form>
+            <a href="/">Back to Form List</a>
+        </div>
+        
+        <div class="sidebar">
             <h2>Variables</h2>
             <div id="variableModules">
                 <div th:each="variable, stat : ${form.variables}" class="variable-module">
-                    <div class="variable-input">
+                    <div class="variable-row">
                         <label th:for="${'variableNotes' + stat.index}">Notes:</label>
-                        <input type="text" th:id="${'variableNotes' + stat.index}" th:name="'variableNotes[' + ${stat.index} + ']'" th:value="${variable.notes}">
+                        <div class="variable-input">
+                            <input type="text" th:id="${'variableNotes' + stat.index}" th:name="'variableNotes[' + ${stat.index} + ']'" th:value="${variable.notes}">
+                        </div>
                     </div>
-                    <div class="variable-input">
+                    <div class="variable-row">
                         <label th:for="${'variableKeys' + stat.index}">Key:</label>
-                        <input type="text" th:id="${'variableKeys' + stat.index}" th:name="'variableKeys[' + ${stat.index} + ']'" th:value="${variable.key}">
+                        <div class="variable-input">
+                            <input type="text" th:id="${'variableKeys' + stat.index}" th:name="'variableKeys[' + ${stat.index} + ']'" th:value="${variable.key}">
+                        </div>
                     </div>
-                    <div class="variable-input">
+                    <div class="variable-row">
                         <label th:for="${'variableValues' + stat.index}">Value:</label>
-                        <input type="text" th:id="${'variableValues' + stat.index}" th:name="'variableValues[' + ${stat.index} + ']'" th:value="${variable.value}">
+                        <div class="variable-input">
+                            <input type="text" th:id="${'variableValues' + stat.index}" th:name="'variableValues[' + ${stat.index} + ']'" th:value="${variable.value}">
+                        </div>
                     </div>
                 </div>
             </div>
-            <button type="button" onclick="addVariableModule()">New Variable</button><br><br>
-            
-            <h2>Commands</h2>
-            <div id="commandModules">
-                <div th:each="command, stat : ${form.commands}" class="command-module">
-                    <h3>
-                        <span th:text="'Command Module ' + ${stat.index + 1}"></span>
-                        <label class="switch">
-                            <input type="checkbox" th:name="'commandActive[' + ${stat.index} + ']'" th:checked="${command.active}">
-                            <span class="slider"></span>
-                        </label>
-                        <span class="status-text" th:text="${command.active ? 'ON' : 'OFF'}"></span>
-                    </h3>
-                    <div class="input-group">
-                        <label th:for="${'commandNotes' + stat.index}">Command Notes:</label>
-                        <input type="text" th:id="${'commandNotes' + stat.index}" th:name="'commandNotes[' + ${stat.index} + ']'" th:value="${command.notes}">
-                    </div>
-                    <div class="input-group">
-                        <label th:for="${'commandContents' + stat.index}">Command Content:</label>
-                        <textarea th:id="${'commandContents' + stat.index}" th:name="'commandContents[' + ${stat.index} + ']'" th:text="${command.content}"></textarea>
-                    </div>
-                </div>
-            </div>
-            
-            <button type="button" onclick="addCommandModule()">New Command</button><br><br>
-            
-            <input type="submit" value="Save Form">
-        </form>
-        <a href="/">Back to Form List</a>
+            <button type="button" onclick="addVariableModule()" class="btn btn-primary">New Variable</button>
+        </div>
     </div>
 
     <script th:inline="javascript">
@@ -222,21 +301,25 @@
             
             const fields = ['Notes', 'Key', 'Value'];
             fields.forEach(field => {
-                const inputGroup = document.createElement('div');
-                inputGroup.className = 'variable-input';
+                const row = document.createElement('div');
+                row.className = 'variable-row';
                 
                 const label = document.createElement('label');
                 label.textContent = field + ':';
                 label.htmlFor = 'variable' + field + index;
+                
+                const inputDiv = document.createElement('div');
+                inputDiv.className = 'variable-input';
                 
                 const input = document.createElement('input');
                 input.type = 'text';
                 input.id = 'variable' + field + index;
                 input.name = 'variable' + field + 's[' + index + ']';
                 
-                inputGroup.appendChild(label);
-                inputGroup.appendChild(input);
-                moduleDiv.appendChild(inputGroup);
+                inputDiv.appendChild(input);
+                row.appendChild(label);
+                row.appendChild(inputDiv);
+                moduleDiv.appendChild(row);
             });
             
             document.getElementById('variableModules').appendChild(moduleDiv);
@@ -247,11 +330,13 @@
             const moduleDiv = document.createElement('div');
             moduleDiv.className = 'command-module';
             
-            const moduleHeader = document.createElement('h3');
+            const headerDiv = document.createElement('div');
+            headerDiv.className = 'command-header';
             
-            const moduleSpan = document.createElement('span');
-            moduleSpan.textContent = 'Command Module ' + (index + 1);
-            moduleHeader.appendChild(moduleSpan);
+            const notesLabel = document.createElement('label');
+            notesLabel.textContent = 'Command Notes:';
+            notesLabel.htmlFor = 'commandNotes' + index;
+            headerDiv.appendChild(notesLabel);
             
             const switchLabel = document.createElement('label');
             switchLabel.className = 'switch';
@@ -263,28 +348,22 @@
             switchSpan.className = 'slider';
             switchLabel.appendChild(switchInput);
             switchLabel.appendChild(switchSpan);
-            moduleHeader.appendChild(switchLabel);
+            headerDiv.appendChild(switchLabel);
             
             const statusSpan = document.createElement('span');
             statusSpan.className = 'status-text';
             statusSpan.textContent = 'ON';
-            moduleHeader.appendChild(statusSpan);
+            headerDiv.appendChild(statusSpan);
             
             switchInput.addEventListener('change', function() {
                 statusSpan.textContent = this.checked ? 'ON' : 'OFF';
             });
             
-            const notesGroup = document.createElement('div');
-            notesGroup.className = 'input-group';
-            const notesLabel = document.createElement('label');
-            notesLabel.textContent = 'Command Notes:';
-            notesLabel.htmlFor = 'commandNotes' + index;
             const noteInput = document.createElement('input');
             noteInput.type = 'text';
             noteInput.id = 'commandNotes' + index;
             noteInput.name = 'commandNotes[' + index + ']';
-            notesGroup.appendChild(notesLabel);
-            notesGroup.appendChild(noteInput);
+            noteInput.placeholder = 'Enter command notes';
             
             const contentGroup = document.createElement('div');
             contentGroup.className = 'input-group';
@@ -294,11 +373,12 @@
             const contentTextarea = document.createElement('textarea');
             contentTextarea.id = 'commandContents' + index;
             contentTextarea.name = 'commandContents[' + index + ']';
+            contentTextarea.placeholder = 'Enter command content';
             contentGroup.appendChild(contentLabel);
             contentGroup.appendChild(contentTextarea);
             
-            moduleDiv.appendChild(moduleHeader);
-            moduleDiv.appendChild(notesGroup);
+            moduleDiv.appendChild(headerDiv);
+            moduleDiv.appendChild(noteInput);
             moduleDiv.appendChild(contentGroup);
             
             document.getElementById('commandModules').appendChild(moduleDiv);

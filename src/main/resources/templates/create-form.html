@@ -343,6 +343,7 @@
             moduleDiv.appendChild(contentGroup);
             
             document.getElementById('commandModules').appendChild(moduleDiv);
+            addDragListeners(moduleDiv);  // 使用新的函数添加事件监听器
             console.log('New command module added');
         }
 
@@ -407,6 +408,7 @@
             moduleDiv.appendChild(contentGroup);
             
             document.getElementById('commandModules').appendChild(moduleDiv);
+            addDragListeners(moduleDiv);  // 使用新的函数添加事件监听器
             console.log('New validation module added');
         }
 
@@ -479,6 +481,8 @@
             draggedItem = this;
             this.classList.add('dragging');
             e.dataTransfer.effectAllowed = 'move';
+            // 添加这一行来防止其他元素干扰
+            e.stopPropagation();
         }
 
         function handleDragEnd(e) {
@@ -491,36 +495,60 @@
         function handleDragOver(e) {
             e.preventDefault();
             e.dataTransfer.dropEffect = 'move';
+            
+            // 确保我们处理的是command-module
+            const moduleElement = e.target.closest('.command-module');
+            if (moduleElement && moduleElement !== draggedItem) {
+                moduleElement.classList.add('drag-over');
+            }
         }
 
         function handleDragEnter(e) {
-            this.classList.add('drag-over');
+            e.preventDefault();
+            // 确保我们处理的是command-module
+            const moduleElement = e.target.closest('.command-module');
+            if (moduleElement && moduleElement !== draggedItem) {
+                moduleElement.classList.add('drag-over');
+            }
         }
 
         function handleDragLeave(e) {
-            this.classList.remove('drag-over');
+            e.preventDefault();
+            // 确保我们处理的是command-module
+            const moduleElement = e.target.closest('.command-module');
+            if (moduleElement) {
+                // 检查是否真的离开了整个模块
+                const relatedTarget = e.relatedTarget;
+                if (!moduleElement.contains(relatedTarget)) {
+                    moduleElement.classList.remove('drag-over');
+                }
+            }
         }
 
         function handleDrop(e) {
             e.preventDefault();
-            if (this === draggedItem) return;
+            e.stopPropagation();
+            
+            // 确保我们处理的是command-module
+            const dropTarget = e.target.closest('.command-module');
+            if (!dropTarget || dropTarget === draggedItem) return;
 
             const allModules = [...document.querySelectorAll('.command-module')];
             const draggedIndex = allModules.indexOf(draggedItem);
-            const droppedIndex = allModules.indexOf(this);
+            const droppedIndex = allModules.indexOf(dropTarget);
 
-            const commandModulesDiv = document.getElementById('commandModules');
-            
             if (draggedIndex < droppedIndex) {
-                this.parentNode.insertBefore(draggedItem, this.nextSibling);
+                dropTarget.parentNode.insertBefore(draggedItem, dropTarget.nextSibling);
             } else {
-                this.parentNode.insertBefore(draggedItem, this);
+                dropTarget.parentNode.insertBefore(draggedItem, dropTarget);
             }
 
-            // 重新排序后更新所有模块的索引
+            // 清除所有drag-over效果
+            document.querySelectorAll('.command-module').forEach(module => {
+                module.classList.remove('drag-over');
+            });
+
             updateModuleIndices();
-            
-            this.classList.remove('drag-over');
         }
 
         // 更新所有模块的索引
@@ -551,15 +579,30 @@
         // 为现有的命令模块添加拖拽功能
         document.addEventListener('DOMContentLoaded', function() {
             document.querySelectorAll('.command-module').forEach(module => {
-                module.draggable = true;
-                module.addEventListener('dragstart', handleDragStart);
-                module.addEventListener('dragend', handleDragEnd);
-                module.addEventListener('dragover', handleDragOver);
-                module.addEventListener('drop', handleDrop);
-                module.addEventListener('dragenter', handleDragEnter);
-                module.addEventListener('dragleave', handleDragLeave);
+                addDragListeners(module);
             });
         });
+
+        // 修改添加事件监听器的方式
+        function addDragListeners(module) {
+            module.draggable = true;
+            
+            // 移除可能存在的旧事件监听器
+            module.removeEventListener('dragstart', handleDragStart);
+            module.removeEventListener('dragend', handleDragEnd);
+            module.removeEventListener('dragover', handleDragOver);
+            module.removeEventListener('drop', handleDrop);
+            module.removeEventListener('dragenter', handleDragEnter);
+            module.removeEventListener('dragleave', handleDragLeave);
+            
+            // 添加新的事件监听器
+            module.addEventListener('dragstart', handleDragStart);
+            module.addEventListener('dragend', handleDragEnd);
+            module.addEventListener('dragover', handleDragOver);
+            module.addEventListener('drop', handleDrop);
+            module.addEventListener('dragenter', handleDragEnter);
+            module.addEventListener('dragleave', handleDragLeave);
+        }
     </script>
 </body>
 </html>

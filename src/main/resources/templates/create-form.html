@@ -9,13 +9,48 @@
             font-family: Arial, sans-serif;
             line-height: 1.6;
             margin: 0;
-            padding: 20px;
+            padding: 0;  /* 移除内边距 */
             background-color: #f4f4f4;
             font-size: 14px;
+            min-height: 100vh;  /* 确保最小高度占满视口 */
+            display: flex;  /* 使用 flex 布局 */
         }
+
+        .left-container {
+            width: 300px;
+            background: #f4f4f4;  /* 与主背景色一致 */
+            padding: 20px;
+            height: 100vh;
+            position: fixed;
+            overflow-y: auto;
+            border-right: 1px solid #ddd;
+        }
+
+        .left-content {
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);  /* 与主容器阴影一致 */
+            margin-bottom: 20px;
+        }
+
+        .left-container h1 {
+            color: #333;
+            font-size: 24px;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        .main-container {
+            flex: 1;
+            margin-left: 300px;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+
         .container {
             max-width: 1200px;
-            margin: auto;
+            margin: 0 auto 20px;
             background: white;
             padding: 20px;
             border-radius: 5px;
@@ -221,74 +256,83 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1 th:text="${form.name} ? 'Edit Form' : 'Create New Form'"></h1>
-        <form action="/save" method="post">
-            <div class="form-content">
-                <div class="main-content">
-                    <div class="input-group">
-                        <label for="name">Form Name:</label>
-                        <input type="text" id="name" name="name" th:value="${form.name}" required>
-                    </div>
-                    
-                    <h2>Commands</h2>
-                    <div id="commandModules">
-                        <div th:each="command, stat : ${form.commands}" class="command-module">
-                            <div class="delete-btn">
-                                <i class="fas fa-times"></i>
-                            </div>
-                            <div class="command-header">
-                                <label th:for="${'commandNotes' + stat.index}">Command Notes:</label>
-                                <label class="switch">
-                                    <input type="checkbox" th:name="'commandActive[' + ${stat.index} + ']'" th:checked="${command.active}">
-                                    <span class="slider"></span>
-                                </label>
-                                <span class="status-text" th:text="${command.active ? 'ON' : 'OFF'}"></span>
-                            </div>
-                            <input type="text" th:id="${'commandNotes' + stat.index}" th:name="'commandNotes[' + ${stat.index} + ']'" th:value="${command.notes}">
-                            <div class="input-group">
-                                <label th:for="${'commandContents' + stat.index}">Command Content:</label>
-                                <textarea th:id="${'commandContents' + stat.index}" th:name="'commandContents[' + ${stat.index} + ']'" th:text="${command.content}"></textarea>
+    <div class="left-container">
+        <div class="left-content">
+            <h1>Outline</h1>
+            <!-- 这里可以放置左侧的内容 -->
+        </div>
+    </div>
+    
+    <div class="main-container">
+        <div class="container">
+            <h1 th:text="${form.name} ? 'Edit Form' : 'Create New Form'"></h1>
+            <form action="/save" method="post">
+                <div class="form-content">
+                    <div class="main-content">
+                        <div class="input-group">
+                            <label for="name">Form Name:</label>
+                            <input type="text" id="name" name="name" th:value="${form.name}" required>
+                        </div>
+                        
+                        <h2>Commands</h2>
+                        <div id="commandModules">
+                            <div th:each="command, stat : ${form.commands}" class="command-module">
+                                <div class="delete-btn">
+                                    <i class="fas fa-times"></i>
+                                </div>
+                                <div class="command-header">
+                                    <label th:for="${'commandNotes' + stat.index}">Command Notes:</label>
+                                    <label class="switch">
+                                        <input type="checkbox" th:name="'commandActive[' + ${stat.index} + ']'" th:checked="${command.active}">
+                                        <span class="slider"></span>
+                                    </label>
+                                    <span class="status-text" th:text="${command.active ? 'ON' : 'OFF'}"></span>
+                                </div>
+                                <input type="text" th:id="${'commandNotes' + stat.index}" th:name="'commandNotes[' + ${stat.index} + ']'" th:value="${command.notes}">
+                                <div class="input-group">
+                                    <label th:for="${'commandContents' + stat.index}">Command Content:</label>
+                                    <textarea th:id="${'commandContents' + stat.index}" th:name="'commandContents[' + ${stat.index} + ']'" th:text="${command.content}"></textarea>
+                                </div>
                             </div>
                         </div>
+                        
+                        <button type="button" onclick="addCommandModule()" class="btn btn-primary">New Command</button>
+                        <button type="button" onclick="addValidationModule()" class="btn btn-primary">New Validation</button>
                     </div>
                     
-                    <button type="button" onclick="addCommandModule()" class="btn btn-primary">New Command</button>
-                    <button type="button" onclick="addValidationModule()" class="btn btn-primary">New Validation</button>
+                    <div class="sidebar">
+                        <h2>Variables</h2>
+                        <div id="variableModules">
+                            <div th:each="variable, stat : ${form.variables}" class="variable-module">
+                                <div class="variable-row">
+                                    <label th:for="${'variableNotes' + stat.index}">Notes:</label>
+                                    <div class="variable-input">
+                                        <input type="text" th:id="${'variableNotes' + stat.index}" th:name="'variableNotes[' + ${stat.index} + ']'" th:value="${variable.notes}">
+                                    </div>
+                                </div>
+                                <div class="variable-row">
+                                    <label th:for="${'variableKeys' + stat.index}">Key:</label>
+                                    <div class="variable-input">
+                                        <input type="text" th:id="${'variableKeys' + stat.index}" th:name="'variableKeys[' + ${stat.index} + ']'" th:value="${variable.key}">
+                                    </div>
+                                </div>
+                                <div class="variable-row">
+                                    <label th:for="${'variableValues' + stat.index}">Value:</label>
+                                    <div class="variable-input">
+                                        <input type="text" th:id="${'variableValues' + stat.index}" th:name="'variableValues[' + ${stat.index} + ']'" th:value="${variable.value}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" onclick="addVariableModule()" class="btn btn-primary">New Variable</button>
+                    </div>
                 </div>
                 
-                <div class="sidebar">
-                    <h2>Variables</h2>
-                    <div id="variableModules">
-                        <div th:each="variable, stat : ${form.variables}" class="variable-module">
-                            <div class="variable-row">
-                                <label th:for="${'variableNotes' + stat.index}">Notes:</label>
-                                <div class="variable-input">
-                                    <input type="text" th:id="${'variableNotes' + stat.index}" th:name="'variableNotes[' + ${stat.index} + ']'" th:value="${variable.notes}">
-                                </div>
-                            </div>
-                            <div class="variable-row">
-                                <label th:for="${'variableKeys' + stat.index}">Key:</label>
-                                <div class="variable-input">
-                                    <input type="text" th:id="${'variableKeys' + stat.index}" th:name="'variableKeys[' + ${stat.index} + ']'" th:value="${variable.key}">
-                                </div>
-                            </div>
-                            <div class="variable-row">
-                                <label th:for="${'variableValues' + stat.index}">Value:</label>
-                                <div class="variable-input">
-                                    <input type="text" th:id="${'variableValues' + stat.index}" th:name="'variableValues[' + ${stat.index} + ']'" th:value="${variable.value}">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <button type="button" onclick="addVariableModule()" class="btn btn-primary">New Variable</button>
-                </div>
-            </div>
-            
-            <input type="submit" value="Save Form" class="btn btn-save">
-        </form>
+                <input type="submit" value="Save Form" class="btn btn-save">
+            </form>
+        </div>
+        <a href="/" style="display: block; text-align: center; margin-top: 20px;">Back to Form List</a>
     </div>
-    <a href="/" style="display: block; text-align: center; margin-top: 20px;">Back to Form List</a>
 
     <script th:inline="javascript">
         var moduleCount = /*[[${form.commands.size()}]]*/ 0;
@@ -505,7 +549,7 @@
             }
         }
 
-        // 在表单提交时记录数据
+        // 在表提交时记录数据
         document.querySelector('form').addEventListener('submit', function(e) {
             e.preventDefault();
             console.log('Form submission started');

@@ -32,6 +32,13 @@
             <artifactId>snakeyaml</artifactId>
             <version>1.29</version>
         </dependency>
+        <!-- 添加 spring-boot-devtools 依赖 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
+            <optional>true</optional>
+        </dependency>
     </dependencies>
 
     <build>
@@ -39,6 +46,10 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <!-- 添加 fork 配置以支持热部署 -->
+                    <fork>true</fork>
+                </configuration>
             </plugin>
         </plugins>
     </build>

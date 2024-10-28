@@ -159,6 +159,27 @@
             padding: 4px;  /* 减小输入框内边距 */
             font-size: 12px;  /* 减小字体大小 */
         }
+        .command-module {
+            cursor: move; /* 显示可拖动的光标 */
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+            position: relative;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+        }
+        .command-module:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transform: translateY(-2px);
+        }
+        .command-module.dragging {
+            opacity: 0.5;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .drag-over {
+            border: 2px dashed #2196F3;
+        }
     </style>
 </head>
 <body>
@@ -268,6 +289,7 @@
             const index = document.querySelectorAll('.command-module').length;
             const moduleDiv = document.createElement('div');
             moduleDiv.className = 'command-module';
+            moduleDiv.draggable = true;
             
             const headerDiv = document.createElement('div');
             headerDiv.className = 'command-header';
@@ -329,6 +351,7 @@
             const index = document.querySelectorAll('.command-module').length;
             const moduleDiv = document.createElement('div');
             moduleDiv.className = 'command-module';
+            moduleDiv.draggable = true;
             
             const headerDiv = document.createElement('div');
             headerDiv.className = 'command-header';
@@ -447,6 +470,95 @@
             console.log('Page loaded');
             console.log('Initial form state:');
             logFormData();
+        });
+
+        // 添加拖拽相关的函数
+        let draggedItem = null;
+
+        function handleDragStart(e) {
+            draggedItem = this;
+            this.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+        }
+
+        function handleDragEnd(e) {
+            this.classList.remove('dragging');
+            document.querySelectorAll('.command-module').forEach(item => {
+                item.classList.remove('drag-over');
+            });
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+        }
+
+        function handleDragEnter(e) {
+            this.classList.add('drag-over');
+        }
+
+        function handleDragLeave(e) {
+            this.classList.remove('drag-over');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            if (this === draggedItem) return;
+
+            const allModules = [...document.querySelectorAll('.command-module')];
+            const draggedIndex = allModules.indexOf(draggedItem);
+            const droppedIndex = allModules.indexOf(this);
+
+            const commandModulesDiv = document.getElementById('commandModules');
+            
+            if (draggedIndex < droppedIndex) {
+                this.parentNode.insertBefore(draggedItem, this.nextSibling);
+            } else {
+                this.parentNode.insertBefore(draggedItem, this);
+            }
+
+            // 重新排序后更新所有模块的索引
+            updateModuleIndices();
+            
+            this.classList.remove('drag-over');
+        }
+
+        // 更新所有模块的索引
+        function updateModuleIndices() {
+            document.querySelectorAll('.command-module').forEach((module, index) => {
+                // 更新 notes input
+                const notesInput = module.querySelector('input[name^="commandNotes"]');
+                if (notesInput) {
+                    notesInput.name = `commandNotes[${index}]`;
+                    notesInput.id = `commandNotes${index}`;
+                }
+
+                // 更新 content textarea
+                const contentTextarea = module.querySelector('textarea[name^="commandContents"]');
+                if (contentTextarea) {
+                    contentTextarea.name = `commandContents[${index}]`;
+                    contentTextarea.id = `commandContents${index}`;
+                }
+
+                // 更新 active checkbox
+                const activeCheckbox = module.querySelector('input[name^="commandActive"]');
+                if (activeCheckbox) {
+                    activeCheckbox.name = `commandActive[${index}]`;
+                }
+            });
+        }
+
+        // 为现有的命令模块添加拖拽功能
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.command-module').forEach(module => {
+                module.draggable = true;
+                module.addEventListener('dragstart', handleDragStart);
+                module.addEventListener('dragend', handleDragEnd);
+                module.addEventListener('dragover', handleDragOver);
+                module.addEventListener('drop', handleDrop);
+                module.addEventListener('dragenter', handleDragEnter);
+                module.addEventListener('dragleave', handleDragLeave);
+            });
         });
     </script>
 </body>

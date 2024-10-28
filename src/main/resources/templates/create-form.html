@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Create Form</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -180,6 +181,43 @@
         .drag-over {
             border: 2px dashed #2196F3;
         }
+        .delete-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: transparent;
+            color: #999;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+            opacity: 0.5;
+            transition: all 0.2s ease;
+        }
+
+        .delete-btn:hover {
+            opacity: 1;
+            background-color: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+        }
+
+        .command-module:hover .delete-btn {
+            opacity: 0.7;
+        }
+
+        /* 修改图标大小 */
+        .delete-btn i {
+            font-size: 14px;
+        }
+        .command-module {
+            /* ... 现有样式 ... */
+            position: relative;  /* 确保这行存在 */
+        }
     </style>
 </head>
 <body>
@@ -196,6 +234,9 @@
                     <h2>Commands</h2>
                     <div id="commandModules">
                         <div th:each="command, stat : ${form.commands}" class="command-module">
+                            <div class="delete-btn">
+                                <i class="fas fa-times"></i>
+                            </div>
                             <div class="command-header">
                                 <label th:for="${'commandNotes' + stat.index}">Command Notes:</label>
                                 <label class="switch">
@@ -342,8 +383,11 @@
             moduleDiv.appendChild(noteInput);
             moduleDiv.appendChild(contentGroup);
             
+            // 在添加其他元素后，添加删除按钮
+            addDeleteButton(moduleDiv);
+            
             document.getElementById('commandModules').appendChild(moduleDiv);
-            addDragListeners(moduleDiv);  // 使用新的函数添加事件监听器
+            addDragListeners(moduleDiv);
             console.log('New command module added');
         }
 
@@ -407,8 +451,11 @@
             moduleDiv.appendChild(noteInput);
             moduleDiv.appendChild(contentGroup);
             
+            // 在添加其他元素后，添加删除按钮
+            addDeleteButton(moduleDiv);
+            
             document.getElementById('commandModules').appendChild(moduleDiv);
-            addDragListeners(moduleDiv);  // 使用新的函数添加事件监听器
+            addDragListeners(moduleDiv);
             console.log('New validation module added');
         }
 
@@ -603,6 +650,29 @@
             module.addEventListener('dragenter', handleDragEnter);
             module.addEventListener('dragleave', handleDragLeave);
         }
+
+        function addDeleteButton(moduleDiv) {
+            const deleteBtn = document.createElement('div');
+            deleteBtn.className = 'delete-btn';
+            // 使用 Font Awesome 图标
+            deleteBtn.innerHTML = '<i class="fas fa-times"></i>';
+            deleteBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                if (confirm('Are you sure you want to delete this command module?')) {
+                    moduleDiv.remove();
+                    updateModuleIndices();
+                }
+            });
+            moduleDiv.appendChild(deleteBtn);
+        }
+
+        // 为现有的命令模块添加删除按钮
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.command-module').forEach(module => {
+                addDeleteButton(module);
+                addDragListeners(module);
+            });
+        });
     </script>
 </body>
 </html>

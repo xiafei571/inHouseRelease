@@ -10,6 +10,8 @@ import org.yaml.snakeyaml.Yaml;
 import java.io.*;
 import java.nio.file.*;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class FormService {
@@ -112,11 +114,13 @@ public class FormService {
             return new ArrayList<>();
         }
 
-        return Files.list(Paths.get(SOURCE_DIR))
-                .filter(path -> path.toString().endsWith(".yml"))
-                .map(path -> path.getFileName().toString())
-                .map(fileName -> fileName.substring(0, fileName.length() - 4))
-                .toList();
+        try (Stream<Path> stream = Files.list(Paths.get(SOURCE_DIR))) {
+            return stream
+                    .filter(path -> path.toString().endsWith(".yml"))
+                    .map(path -> path.getFileName().toString())
+                    .map(fileName -> fileName.substring(0, fileName.length() - 4))
+                    .collect(Collectors.toList());
+        }
     }
 
     public Form getForm(String name) throws IOException {
@@ -132,27 +136,43 @@ public class FormService {
             Form form = new Form();
             form.setName((String) data.get("name"));
             
-            List<Map<String, String>> variablesList = (List<Map<String, String>>) data.get("variables");
-            if (variablesList != null) {
-                List<Form.Variable> variables = new ArrayList<>();
-                for (Map<String, String> variableMap : variablesList) {
-                    Form.Variable variable = new Form.Variable();
-                    variable.setNotes(variableMap.get("notes"));
-                    variable.setKey(variableMap.get("key"));
-                    variable.setValue(variableMap.get("value"));
-                    variables.add(variable);
+            // 安全处理 variables
+            Object variablesObj = data.get("variables");
+            List<Form.Variable> variables = new ArrayList<>();
+            if (variablesObj instanceof List<?>) {
+                for (Object item : (List<?>) variablesObj) {
+                    if (item instanceof Map) {
+                        @SuppressWarnings("unchecked")
+                        Map<String, String> variableMap = (Map<String, String>) item;
+                        Form.Variable variable = new Form.Variable();
+                        variable.setNotes(variableMap.get("notes"));
+                        variable.setKey(variableMap.get("key"));
+                        variable.setValue(variableMap.get("value"));
+                        variables.add(variable);
+                    }
                 }
-                form.setVariables(variables);
             }
+            form.setVariables(variables);
 
-            List<Map<String, Object>> commandsList = (List<Map<String, Object>>) data.get("commands");
+            // 安全处理 commands
+            Object commandsObj = data.get("commands");
             List<Form.Command> commands = new ArrayList<>();
-            for (Map<String, Object> commandMap : commandsList) {
-                Form.Command command = new Form.Command();
-                command.setNotes((String) commandMap.get("notes"));
-                command.setContent((String) commandMap.get("content"));
-                command.setActive((Boolean) commandMap.get("active"));
-                commands.add(command);
+            if (commandsObj instanceof List<?>) {
+                for (Object item : (List<?>) commandsObj) {
+                    if (item instanceof Map) {
+                        @SuppressWarnings("unchecked")
+                        Map<String, Object> commandMap = (Map<String, Object>) item;
+                        Form.Command command = new Form.Command();
+                        command.setNotes((String) commandMap.get("notes"));
+                        command.setContent((String) commandMap.get("content"));
+                        
+                        // 安全处理 active 状态
+                        Object activeObj = commandMap.get("active");
+                        command.setActive(activeObj instanceof Boolean ? (Boolean) activeObj : false);
+                        
+                        commands.add(command);
+                    }
+                }
             }
             form.setCommands(commands);
             return form;

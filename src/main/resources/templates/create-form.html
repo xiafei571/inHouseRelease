@@ -192,6 +192,7 @@
                     </div>
                     
                     <button type="button" onclick="addCommandModule()" class="btn btn-primary">New Command</button>
+                    <button type="button" onclick="addValidationModule()" class="btn btn-primary">New Validation</button>
                 </div>
                 
                 <div class="sidebar">
@@ -321,6 +322,69 @@
             
             document.getElementById('commandModules').appendChild(moduleDiv);
             console.log('New command module added');
+        }
+
+        function addValidationModule() {
+            console.log('Adding new validation module');
+            const index = document.querySelectorAll('.command-module').length;
+            const moduleDiv = document.createElement('div');
+            moduleDiv.className = 'command-module';
+            
+            const headerDiv = document.createElement('div');
+            headerDiv.className = 'command-header';
+            
+            const notesLabel = document.createElement('label');
+            notesLabel.textContent = 'Command Notes:';
+            notesLabel.htmlFor = 'commandNotes' + index;
+            headerDiv.appendChild(notesLabel);
+            
+            const switchLabel = document.createElement('label');
+            switchLabel.className = 'switch';
+            const switchInput = document.createElement('input');
+            switchInput.type = 'checkbox';
+            switchInput.name = 'commandActive[' + index + ']';
+            switchInput.checked = true;
+            const switchSpan = document.createElement('span');
+            switchSpan.className = 'slider';
+            switchLabel.appendChild(switchInput);
+            switchLabel.appendChild(switchSpan);
+            headerDiv.appendChild(switchLabel);
+            
+            const statusSpan = document.createElement('span');
+            statusSpan.className = 'status-text';
+            statusSpan.textContent = 'ON';
+            headerDiv.appendChild(statusSpan);
+            
+            switchInput.addEventListener('change', function() {
+                statusSpan.textContent = this.checked ? 'ON' : 'OFF';
+            });
+            
+            const noteInput = document.createElement('input');
+            noteInput.type = 'text';
+            noteInput.id = 'commandNotes' + index;
+            noteInput.name = 'commandNotes[' + index + ']';
+            noteInput.value = 'Please verify... '; // Initialize notes with default value
+            
+            const contentGroup = document.createElement('div');
+            contentGroup.className = 'input-group';
+            const contentLabel = document.createElement('label');
+            contentLabel.textContent = 'Command Content:';
+            contentLabel.htmlFor = 'commandContents' + index;
+            const contentTextarea = document.createElement('textarea');
+            contentTextarea.id = 'commandContents' + index;
+            contentTextarea.name = 'commandContents[' + index + ']';
+            // Initialize content with default validation script
+            contentTextarea.value = 'set /p userInput=Do you want to continue? (y/n): \nif /i not "%userInput%"=="y" (\n    echo Operation cancelled.\n    exit /b\n)';
+            
+            contentGroup.appendChild(contentLabel);
+            contentGroup.appendChild(contentTextarea);
+            
+            moduleDiv.appendChild(headerDiv);
+            moduleDiv.appendChild(noteInput);
+            moduleDiv.appendChild(contentGroup);
+            
+            document.getElementById('commandModules').appendChild(moduleDiv);
+            console.log('New validation module added');
         }
 
         // 为有的开关添加事件监听器

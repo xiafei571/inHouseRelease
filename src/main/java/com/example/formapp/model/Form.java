@@ -7,6 +7,7 @@ public class Form {
     private String name;
     private List<Variable> variables;
     private List<Command> commands;
+    private boolean echoOn = false;  // 默认是 echo off
 
     public Form() {
         this.variables = new ArrayList<>();
@@ -36,6 +37,14 @@ public class Form {
 
     public void setCommands(List<Command> commands) {
         this.commands = commands;
+    }
+
+    public boolean isEchoOn() {
+        return echoOn;
+    }
+
+    public void setEchoOn(boolean echoOn) {
+        this.echoOn = echoOn;
     }
 
     public static class Command {

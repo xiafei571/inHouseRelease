@@ -40,7 +40,8 @@ public class FormController {
 
         Form form = new Form();
         form.setName(allParams.get("name"));
-        logger.debug("Form name: {}", form.getName());
+        form.setEchoOn(allParams.containsKey("echoOn"));
+        logger.debug("Form name: {}, echoOn: {}", form.getName(), form.isEchoOn());
 
         List<Form.Variable> variables = new ArrayList<>();
         List<Form.Command> commands = new ArrayList<>();

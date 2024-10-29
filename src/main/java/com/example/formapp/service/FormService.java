@@ -33,6 +33,7 @@ public class FormService {
         String ymlFileName = form.getName() + ".yml";
         Map<String, Object> data = new LinkedHashMap<>();
         data.put("name", form.getName());
+        data.put("echoOn", form.isEchoOn());
         
         List<Map<String, String>> variablesList = new ArrayList<>();
         for (Form.Variable variable : form.getVariables()) {
@@ -69,7 +70,7 @@ public class FormService {
         // Generate .bat file in output directory
         String batFileName = form.getName() + ".bat";
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(new File(outputDir, batFileName)))) {
-            writer.write("@echo off");
+            writer.write("@echo " + (form.isEchoOn() ? "on" : "off"));
             writer.newLine();
             writer.newLine();
 
@@ -175,6 +176,11 @@ public class FormService {
                 }
             }
             form.setCommands(commands);
+
+            // 添加读取 echoOn 属性
+            Object echoOnObj = data.get("echoOn");
+            form.setEchoOn(echoOnObj instanceof Boolean ? (Boolean) echoOnObj : false);
+
             return form;
         }
     }

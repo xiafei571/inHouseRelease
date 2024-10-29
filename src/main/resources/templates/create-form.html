@@ -300,6 +300,17 @@
                             <input type="text" id="name" name="name" th:value="${form.name}" required>
                         </div>
                         
+                        <div class="input-group" style="margin: 15px 0;">
+                            <label style="display: flex; align-items: center;">
+                                <span style="margin-right: 10px;">Echo Setting:</span>
+                                <label class="switch">
+                                    <input type="checkbox" name="echoOn" th:checked="${form.echoOn}">
+                                    <span class="slider"></span>
+                                </label>
+                                <span style="margin-left: 10px;" th:text="${form.echoOn ? 'ON' : 'OFF'}"></span>
+                            </label>
+                        </div>
+                        
                         <h2>Commands</h2>
                         <div id="commandModules">
                             <div th:each="command, stat : ${form.commands}" class="command-module">
@@ -453,7 +464,7 @@
             moduleDiv.appendChild(noteInput);
             moduleDiv.appendChild(contentGroup);
             
-            // 在��加其他元素后，添��删除按钮
+            // 在加其他元素后，添删除按钮
             addDeleteButton(moduleDiv);
             
             document.getElementById('commandModules').appendChild(moduleDiv);
@@ -743,7 +754,7 @@
                 if (confirm('Are you sure you want to delete this command module?')) {
                     moduleDiv.remove();
                     updateModuleIndices();
-                    // 添加导航更新
+                    // 添加导航更
                     updateNavigationList();
                     setupScrollSpy();
                 }
@@ -822,6 +833,34 @@
                 observer.observe(module);
             });
         }
+
+        // 为 Echo Setting 开关添加事件监听器
+        document.addEventListener('DOMContentLoaded', function() {
+            const echoSwitch = document.querySelector('input[name="echoOn"]');
+            const echoStatus = echoSwitch.parentElement.nextElementSibling;
+            
+            echoSwitch.addEventListener('change', function() {
+                echoStatus.textContent = this.checked ? 'ON' : 'OFF';
+            });
+        });
+
+        // 为现有的命令模块添加开关事件监听器
+        document.addEventListener('DOMContentLoaded', function() {
+            // 现有的 DOMContentLoaded 代码...
+            
+            // 为所有命令模块的开关添加事件监听器
+            document.querySelectorAll('.command-module').forEach(module => {
+                const switchInput = module.querySelector('input[name^="commandActive"]');
+                const statusText = module.querySelector('.status-text');
+                if (switchInput && statusText) {
+                    switchInput.addEventListener('change', function() {
+                        statusText.textContent = this.checked ? 'ON' : 'OFF';
+                    });
+                }
+            });
+            
+            // ... 其他现有的 DOMContentLoaded 代码 ...
+        });
     </script>
 </body>
 </html>
